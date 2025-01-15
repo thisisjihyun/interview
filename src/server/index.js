@@ -6,25 +6,22 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// TODO - Change data.data in this file
 app.get("/api/bicycles", (req, res) => {
   res.json(data);
 });
 
 app.post("/api/bicycles", (req, res) => {
-  const { name, frameType, frameFinish, wheels, rims, chain, stock } = req.body;
+  const { name, description, price, parts } = req.body;
   const newBicycle = {
     id: data.length + 1,
     name,
-    frameType,
-    frameFinish,
-    wheels,
-    rims,
-    chain,
-    stock,
+    description,
+    price,
+    parts,
   };
   data.push(newBicycle);
-  res.status(201).json(newBicycle);
+  res.json(data);
+  // TODO - Add status code?
 });
 
 app.delete("/api/bicycles/:id", (req, res) => {
@@ -36,6 +33,18 @@ app.delete("/api/bicycles/:id", (req, res) => {
   } else {
     data.splice(index, 1);
     res.json(data);
+  }
+});
+
+app.put("/api/bicycles/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = data.findIndex((bike) => bike.id === id);
+
+  if (index === -1) {
+    res.status(404).send({ message: "Bicycle not found" });
+  } else {
+    data[index] = req.body;
+    res.json(data[index]);
   }
 });
 

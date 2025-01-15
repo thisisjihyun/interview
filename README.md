@@ -2,8 +2,8 @@ Thanks for taking your time to check out and review the codebase.
 
 Here are more details
 
-# TechStack
-FE: React 
+## TechStack
+FE: React\
 BE: Express 
 
 ## Available Scripts
@@ -20,6 +20,6 @@ Launches the test runner in the interactive watch mode.
 
 ## Notes
 - As mentioned in the interview instructions, I did *not* implement any styling. please focus on the funtionality and ignore the apprearance 😊
-- E2E tests are included tocover basic funtionality. They aim to validate the *minimum* senarios.
+- E2E tests are included to cover basic funtionality. They aim to validate the *minimum* senarios.
 
 ## Trade-off

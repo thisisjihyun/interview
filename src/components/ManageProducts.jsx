@@ -1,23 +1,41 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
-const App = () => {
+export const ManageProducts = () => {
+  const navigate = useNavigate();
   const [bicycles, setBicycles] = useState([]);
-  // TODO - can it be combined?
   const [newBicycle, setNewBicycle] = useState({
     name: "",
-    frameType: [],
-    frameFinish: [],
-    wheels: [],
-    rims: [],
-    chain: [],
-    stock: false,
+    description: "",
+    price: "",
+    parts: [
+      {
+        partName: "frameType",
+        options: [],
+      },
+      {
+        partName: "frameFinish",
+        options: [],
+      },
+      {
+        partName: "wheels",
+        options: [],
+      },
+      {
+        partName: "rimColor",
+        options: [],
+      },
+      {
+        partName: "chain",
+        options: [],
+      },
+    ],
   });
-  const [selectedBicycle, setSelectedBicycle] = useState(null);
 
   // TODO - redundant code
   useEffect(() => {
     fetchBicycles();
-  }, []);
+  }, [bicycles]);
 
   const fetchBicycles = async () => {
     const response = await fetch("http://localhost:4000/api/bicycles");
@@ -25,13 +43,15 @@ const App = () => {
     setBicycles(data);
   };
 
-  const addBicycle = async () => {
+  const handleCreate = async () => {
     if (
       !newBicycle.name ||
+      !newBicycle.description ||
+      !newBicycle.price ||
       !newBicycle.frameType ||
       !newBicycle.frameFinish ||
       !newBicycle.wheels ||
-      !newBicycle.rims ||
+      !newBicycle.rimColor ||
       !newBicycle.chain
     )
       return alert("Please fill in all fields");
@@ -45,7 +65,11 @@ const App = () => {
     setBicycles([...bicycles, data]);
   };
 
-  const deleteBicycle = async (id) => {
+  const handleEdit = (bike) => {
+    navigate(`/updateProduct`, { state: { bike, isAdmin: true } });
+  };
+
+  const handleDelete = async (id) => {
     try {
       const response = await fetch(`http://localhost:4000/api/bicycles/${id}`, {
         method: "DELETE",
@@ -55,6 +79,16 @@ const App = () => {
     } catch (error) {
       console.error("Error deleting bicycle:", error);
     }
+  };
+  const handlePartChange = (partName, option) => {
+    setNewBicycle((prev) => ({
+      ...prev,
+      parts: prev.parts.map((part) =>
+        part.partName === partName
+          ? { ...part, options: [{ option, stock: 1 }] }
+          : part
+      ),
+    }));
   };
 
   return (
@@ -72,95 +106,79 @@ const App = () => {
         />
         <input
           type="text"
+          placeholder="Description"
+          value={newBicycle.description}
+          onChange={(e) =>
+            setNewBicycle({ ...newBicycle, description: e.target.value })
+          }
+        />
+        <input
+          type="number"
+          placeholder="Price"
+          value={newBicycle.price}
+          onChange={(e) =>
+            setNewBicycle({ ...newBicycle, price: e.target.value })
+          }
+        />
+        <input
+          type="text"
           placeholder="Frame Type"
           value={newBicycle.frameType}
-          onChange={(e) =>
-            setNewBicycle({
-              ...newBicycle,
-              frameType: [...newBicycle.frameType, e.target.value],
-            })
-          }
+          onBlur={(e) => handlePartChange("frameType", e.target.value)}
         />
         <input
           type="text"
           placeholder="Frame Finish"
           value={newBicycle.frameFinish}
-          onChange={(e) =>
-            setNewBicycle({
-              ...newBicycle,
-              frameFinish: [...newBicycle.frameFinish, e.target.value],
-            })
-          }
+          onBlur={(e) => handlePartChange("frameFinish", e.target.value)}
         />
         <input
           type="text"
           placeholder="Wheels"
           value={newBicycle.wheels}
-          onChange={(e) =>
-            setNewBicycle({
-              ...newBicycle,
-              wheels: [...newBicycle.wheels, e.target.value],
-            })
-          }
+          onBlur={(e) => handlePartChange("wheels", e.target.value)}
         />
         <input
           type="text"
-          placeholder="Rims"
-          value={newBicycle.rims}
-          onChange={(e) =>
-            setNewBicycle({
-              ...newBicycle,
-              rims: [...newBicycle.rims, e.target.value],
-            })
-          }
+          placeholder="Rim Color"
+          value={newBicycle.rimColor}
+          onBlur={(e) => handlePartChange("rimColor", e.target.value)}
         />
         <input
           type="text"
           placeholder="Chain"
           value={newBicycle.chain}
-          onChange={(e) =>
-            setNewBicycle({
-              ...newBicycle,
-              chain: e.target.value,
-              chain: [...newBicycle.chain, e.target.value],
-            })
-          }
+          onBlur={(e) => handlePartChange("chain", e.target.value)}
         />
-        <label>Stock</label>
-        <input
-          type="checkbox"
-          placeholder="Stock"
-          value={newBicycle.stock}
-          onChange={(e) =>
-            setNewBicycle({ ...newBicycle, stock: e.target.value })
-          }
-        />
-        <button onClick={addBicycle}>Add Bicycle</button>
+        <button onClick={handleCreate}>Add Bicycle</button>
       </div>
 
       <div>
         <h2>Bicycle List</h2>
-        {bicycles.map((bike) => (
+        {bicycles?.map((bike) => (
           <div key={bike.id}>
             <h3>{bike.name}</h3>
-            <button onClick={() => deleteBicycle(bike.id)}>Delete</button>
-            {selectedBicycle?.id === bike.id && (
-              <div>
-                <h4>Configurations</h4>
-                <ul>
-                  {bike.configurations.map((config, index) => (
-                    <li key={index}>
-                      {config.characteristic}: {config.options.join(", ")}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
+            <p>{bike.description}</p>
+            <p>Price: ${bike.price}</p>
+            <div>
+              {bike?.parts?.map((part, partIndex) => (
+                <div key={partIndex}>
+                  <h4>{part.partName}</h4>
+                  <ul>
+                    {part.options?.map((option, optionIndex) => (
+                      <li key={optionIndex}>
+                        {option.option} - Stock: {option.stock}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              ))}
+            </div>
+            <button onClick={() => handleEdit(bike)}>Edit</button>
+            <button onClick={() => handleDelete(bike.id)}>Delete</button>
           </div>
         ))}
       </div>
     </div>
   );
 };
-
-export default App;
