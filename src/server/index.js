@@ -1,27 +1,36 @@
 const express = require("express");
-const app = express();
 const cors = require("cors");
-const data = require("./data");
+const { data } = require("./data");
 
+const app = express();
 app.use(cors());
 app.use(express.json());
 
 // TODO - Change data.data in this file
 app.get("/api/bicycles", (req, res) => {
-  res.json(data.data);
+  res.json(data);
 });
 
 app.post("/api/bicycles", (req, res) => {
-  console.log('here 111 ', res)
-  const newData = { id: data.data.length + 1, ...req.body };
-  data.data.push(newData);
-  res.status(201).json(newData);
+  const { name, frameType, frameFinish, wheels, rims, chain, stock } = req.body;
+  const newBicycle = {
+    id: data.length + 1,
+    name,
+    frameType,
+    frameFinish,
+    wheels,
+    rims,
+    chain,
+    stock,
+  };
+  data.push(newBicycle);
+  res.status(201).json(newBicycle);
 });
 
 app.delete("/api/bicycles/:id", (req, res) => {
   const { id } = req.params;
-  data = data.data.filter((bike) => bike.id !== parseInt(id));
-  res.status(204).send();
+  data = data.filter((bike) => bike.id !== parseInt(id));
+  res.status(200).send({ message: "Bicycle deleted successfully" });
 });
 
 app.listen(4000, () => {
