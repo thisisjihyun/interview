@@ -1,10 +1,10 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import { Home } from "./Home";
-import { Details } from "./Details";
-import { Cart } from "./Cart";
-import ManageProducts from "./ManageProducts";
 import { CartProvider } from "./Context";
+import { Home } from "./components/Home";
+import { Details } from "./components/Details";
+import { Cart } from "./components/Cart";
+import ManageProducts from "./components/ManageProducts";
 
 const App = () => {
   return (

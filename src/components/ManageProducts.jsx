@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 
 const App = () => {
   const [bicycles, setBicycles] = useState([]);
+  // TODO - can it be combined?
   const [newBicycle, setNewBicycle] = useState({
     name: "",
     frameType: [],
@@ -12,10 +13,6 @@ const App = () => {
     stock: false,
   });
   const [selectedBicycle, setSelectedBicycle] = useState(null);
-  //   const [newConfig, setNewConfig] = useState({
-  //     characteristic: "",
-  //     options: "",
-  //   });
 
   // TODO - redundant code
   useEffect(() => {
@@ -44,39 +41,21 @@ const App = () => {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(newBicycle),
     });
-    console.log("here new", newBicycle);
     const data = await response.json();
     setBicycles([...bicycles, data]);
-    // setNewBicycle({ name: "", model: "" });
   };
 
-  //   const deleteBicycle = async (id) => {
-  //     await fetch(`http://localhost:4000/api/bicycles/${id}`, {
-  //       method: "DELETE",
-  //     });
-  //     setBicycles(bicycles.filter((bike) => bike.id !== id));
-  //   };
-
-  //   const addConfiguration = async (id) => {
-  //     if (!newConfig.characteristic || !newConfig.options)
-  //       return alert("Please fill in all fields");
-  //     const response = await fetch(
-  //       `http://localhost:4000/api/bicycles/${id}/configurations`,
-  //       {
-  //         method: "POST",
-  //         headers: { "Content-Type": "application/json" },
-  //         body: JSON.stringify({
-  //           characteristic: newConfig.characteristic,
-  //           options: newConfig.options.split(",").map((opt) => opt.trim()), // Split options by comma
-  //         }),
-  //       }
-  //     );
-  //     const updatedBicycle = await response.json();
-  //     setBicycles(
-  //       bicycles.map((bike) => (bike.id === id ? updatedBicycle : bike))
-  //     );
-  //     setNewConfig({ characteristic: "", options: "" });
-  //   };
+  const deleteBicycle = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:4000/api/bicycles/${id}`, {
+        method: "DELETE",
+      });
+      const data = await response.json();
+      setBicycles(data);
+    } catch (error) {
+      console.error("Error deleting bicycle:", error);
+    }
+  };
 
   return (
     <div>
@@ -164,11 +143,7 @@ const App = () => {
         {bicycles.map((bike) => (
           <div key={bike.id}>
             <h3>{bike.name}</h3>
-            {/* <button onClick={() => deleteBicycle(bike.id)}>Delete</button> */}
-            {/* <button onClick={() => setSelectedBicycle(bike)}>
-              Manage Configurations
-            </button> */}
-
+            <button onClick={() => deleteBicycle(bike.id)}>Delete</button>
             {selectedBicycle?.id === bike.id && (
               <div>
                 <h4>Configurations</h4>
@@ -179,30 +154,6 @@ const App = () => {
                     </li>
                   ))}
                 </ul>
-
-                {/* <div>
-                  <h5>Add Configuration</h5>
-                  <input
-                    type="text"
-                    value={newConfig.characteristic}
-                    onChange={(e) =>
-                      setNewConfig({
-                        ...newConfig,
-                        characteristic: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    value={newConfig.options}
-                    onChange={(e) =>
-                      setNewConfig({ ...newConfig, options: e.target.value })
-                    }
-                  />
-                  <button onClick={() => addConfiguration(bike.id)}>
-                    Add Configuration
-                  </button>
-                </div> */}
               </div>
             )}
           </div>

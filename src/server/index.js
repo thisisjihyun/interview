@@ -28,9 +28,15 @@ app.post("/api/bicycles", (req, res) => {
 });
 
 app.delete("/api/bicycles/:id", (req, res) => {
-  const { id } = req.params;
-  data = data.filter((bike) => bike.id !== parseInt(id));
-  res.status(200).send({ message: "Bicycle deleted successfully" });
+  const id = parseInt(req.params.id);
+  const index = data.findIndex((bike) => bike.id === id);
+
+  if (index === -1) {
+    res.status(404).send({ message: "Bicycle not found" });
+  } else {
+    data.splice(index, 1);
+    res.json(data);
+  }
 });
 
 app.listen(4000, () => {
