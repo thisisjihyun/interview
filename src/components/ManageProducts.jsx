@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
+
+import { ProductsContext } from "../contexts/ProductContext";
+import { displayNames } from "../constants";
 
 export const ManageProducts = () => {
   const navigate = useNavigate();
-  const [bicycles, setBicycles] = useState([]);
-  const [newBicycle, setNewBicycle] = useState({
+  const { products, setProducts } = useContext(ProductsContext);
+  const [newProducts, setNewProducts] = useState({
     name: "",
     description: "",
     price: "",
@@ -32,55 +35,49 @@ export const ManageProducts = () => {
     ],
   });
 
-  // TODO - redundant code
-  useEffect(() => {
-    fetchBicycles();
-  }, [bicycles]);
-
-  const fetchBicycles = async () => {
-    const response = await fetch("http://localhost:4000/api/bicycles");
-    const data = await response.json();
-    setBicycles(data);
-  };
-
   const handleCreate = async () => {
     if (
-      !newBicycle.name ||
-      !newBicycle.description ||
-      !newBicycle.price ||
-      newBicycle.parts.some(
+      !newProducts.name ||
+      !newProducts.description ||
+      !newProducts.price ||
+      newProducts.parts.some(
         (part) => part.options.length === 0 || part.options[0]?.option === ""
       )
     ) {
       return alert("Please fill in all fields");
     }
 
-    const response = await fetch("http://localhost:4000/api/bicycles", {
+    const response = await fetch("http://localhost:4000/products", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newBicycle),
+      body: JSON.stringify(newProducts),
     });
     const data = await response.json();
-    setBicycles([...bicycles, data]);
+    setProducts(data);
   };
 
-  const handleEdit = (bike) => {
-    navigate(`/updateProduct`, { state: { bike, isAdmin: true } });
-  };
+  const handleEdit = (product) =>
+    navigate(`/updateProduct`, { state: { product } });
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:4000/api/bicycles/${id}`, {
+      const response = await fetch(`http://localhost:4000/products/${id}`, {
         method: "DELETE",
       });
-      const data = await response.json();
-      setBicycles(data.data);
+
+      if (response.status === 200) {
+        const updatedProducts = products.filter((product) => product.id !== id);
+        setProducts(updatedProducts);
+      } else {
+        console.error("Failed to delete the product");
+      }
     } catch (error) {
-      console.error("Error deleting bicycle:", error);
+      console.error("Error deleting a product:", error);
     }
   };
+
   const handlePartChange = (partName, option) => {
-    setNewBicycle((prev) => ({
+    setNewProducts((prev) => ({
       ...prev,
       parts: prev.parts.map((part) =>
         part.partName === partName
@@ -98,71 +95,72 @@ export const ManageProducts = () => {
         <input
           type="text"
           placeholder="Name"
-          value={newBicycle.name}
+          value={newProducts.name}
           onChange={(e) =>
-            setNewBicycle({ ...newBicycle, name: e.target.value })
+            setNewProducts({ ...newProducts, name: e.target.value })
           }
         />
         <input
           type="text"
           placeholder="Description"
-          value={newBicycle.description}
+          value={newProducts.description}
           onChange={(e) =>
-            setNewBicycle({ ...newBicycle, description: e.target.value })
+            setNewProducts({ ...newProducts, description: e.target.value })
           }
         />
         <input
           type="number"
           placeholder="Price"
-          value={newBicycle.price}
+          value={newProducts.price}
           onChange={(e) =>
-            setNewBicycle({ ...newBicycle, price: e.target.value })
+            setNewProducts({ ...newProducts, price: e.target.value })
           }
         />
         <input
           type="text"
           placeholder="Frame Type"
-          value={newBicycle.frameType}
+          value={newProducts.frameType}
           onBlur={(e) => handlePartChange("frameType", e.target.value)}
         />
         <input
           type="text"
           placeholder="Frame Finish"
-          value={newBicycle.frameFinish}
+          value={newProducts.frameFinish}
           onBlur={(e) => handlePartChange("frameFinish", e.target.value)}
         />
         <input
           type="text"
           placeholder="Wheels"
-          value={newBicycle.wheels}
+          value={newProducts.wheels}
           onBlur={(e) => handlePartChange("wheels", e.target.value)}
         />
         <input
           type="text"
           placeholder="Rim Color"
-          value={newBicycle.rimColor}
+          value={newProducts.rimColor}
           onBlur={(e) => handlePartChange("rimColor", e.target.value)}
         />
         <input
           type="text"
           placeholder="Chain"
-          value={newBicycle.chain}
+          value={newProducts.chain}
           onBlur={(e) => handlePartChange("chain", e.target.value)}
         />
-        <button onClick={handleCreate}>Add Bicycle</button>
+        <button onClick={() => handleCreate()}>Add Bicycle</button>
       </div>
 
       <div>
         <h2>Bicycle List</h2>
-        {bicycles?.map((bike, index) => (
+
+        {products?.map((product, index) => (
           <div key={index}>
-            <h3>{bike.name}</h3>
-            <p>{bike.description}</p>
-            <p>Price: ${bike.price}</p>
+            <h3>{product.name}</h3>
+            <p>{product.description}</p>
+            <p>Price: ${product.price}</p>
             <div>
-              {bike?.parts?.map((part, partIndex) => (
+              {product?.parts?.map((part, partIndex) => (
                 <div key={partIndex}>
-                  <h4>{part.partName}</h4>
+                  <h4>{displayNames[part.partName]}</h4>
                   <ul>
                     {part.options?.map((option, optionIndex) => (
                       <li key={optionIndex}>
@@ -173,8 +171,8 @@ export const ManageProducts = () => {
                 </div>
               ))}
             </div>
-            <button onClick={() => handleEdit(bike)}>Edit</button>
-            <button onClick={() => handleDelete(bike.id)}>Delete</button>
+            <button onClick={() => handleEdit(product)}>Edit</button>
+            <button onClick={() => handleDelete(product.id)}>Delete</button>
           </div>
         ))}
       </div>

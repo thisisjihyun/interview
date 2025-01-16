@@ -1,9 +1,10 @@
 module.exports = [
   {
     id: 1,
-    name: "Bike 1",
-    description: "Best selling bike in the shop",
+    name: "Product 1",
+    description: "Best selling product in the shop",
     price: 500,
+    type:'bike',
     parts: [
       {
         partName: "frameType",
@@ -47,9 +48,10 @@ module.exports = [
   },
   {
     id: 2,
-    name: "Bike 2",
+    name: "product 2",
     description: "Perfect for beginners",
     price: 250,
+    type:'bike',
     parts: [
       {
         partName: "frameType",

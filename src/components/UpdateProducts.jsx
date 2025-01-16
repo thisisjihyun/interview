@@ -1,22 +1,20 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import React, { useState, useContext } from "react";
+import { useLocation } from "react-router-dom";
+
+import { useGoToDirection } from "../utils";
+import { ProductsContext } from "../contexts/ProductContext";
 
 const UpdateProduct = () => {
-  const navigate = useNavigate();
   const location = useLocation();
-  const { bike } = location.state || {};
+  const { product } = location.state || {};
+  const handleGoToProducts = useGoToDirection("/products");
+  const { setProducts } = useContext(ProductsContext);
 
-  const [updatedData, setUpdatedData] = useState(bike || {});
   const [message, setMessage] = useState("");
-
-  useEffect(() => {
-    if (bike) {
-      setUpdatedData(bike);
-    }
-  }, [bike]);
+  const [updatedProducts, setUpdatedProducts] = useState(product);
 
   const handleInputChange = (partName, option, field, value) => {
-    setUpdatedData((prev) => {
+    setUpdatedProducts((prev) => {
       const updatedParts = prev.parts.map((part) => {
         if (part.partName === partName) {
           const updatedOptions = part.options.map((opt) => {
@@ -35,37 +33,39 @@ const UpdateProduct = () => {
   };
 
   const handleNameChange = (e, field) => {
-    setUpdatedData({ ...updatedData, [field]: e.target.value });
+    setUpdatedProducts({ ...updatedProducts, [field]: e.target.value });
   };
 
   const handleSave = async () => {
-    if (!updatedData.id) return;
+    if (!updatedProducts.id) return;
 
     try {
       const response = await fetch(
-        `http://localhost:4000/api/bicycles/${updatedData.id}`,
+        `http://localhost:4000/products/${updatedProducts.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedData),
+          body: JSON.stringify(updatedProducts),
         }
       );
       const data = await response.json();
+
       if (data) {
         setMessage(
-          "Bicycle updated successfully. It will be redirected to the products page in 3 seconds."
+          "Updated successfully. It will be redirected to the products page in 3 seconds."
         );
+        setProducts(data)
         setTimeout(() => {
-          navigate("/products");
+          handleGoToProducts();
         }, 3000);
       }
     } catch (error) {
-      console.error("Error updating bicycle:", error);
+      console.error("Error updating a product:", error);
     }
   };
 
-  if (!updatedData.name) {
-    return <div>Loading...</div>;
+  if (!updatedProducts) {
+    return <div>Not matched product ...</div>;
   }
 
   return (
@@ -75,23 +75,23 @@ const UpdateProduct = () => {
         <label>Name:</label>
         <input
           type="text"
-          value={updatedData.name}
+          value={updatedProducts.name}
           onChange={(e) => handleNameChange(e, "name")}
         />
         <label>Description:</label>
         <input
           type="text"
-          value={updatedData.description}
+          value={updatedProducts.description}
           onChange={(e) => handleNameChange(e, "description")}
         />
         <label>Price:</label>
         <input
           type="number"
-          value={updatedData.price}
+          value={updatedProducts.price}
           onChange={(e) => handleNameChange(e, "price")}
         />
 
-        {updatedData?.parts?.map((part) => (
+        {updatedProducts?.parts?.map((part) => (
           <div key={part.partName}>
             <h3>{part.partName}</h3>
             {part.options.map((option) => (
@@ -122,7 +122,7 @@ const UpdateProduct = () => {
                         part.partName,
                         option.option,
                         "stock",
-                        e.target.value
+                        Number(e.target.value)
                       )
                     }
                     placeholder="Stock"
@@ -134,7 +134,7 @@ const UpdateProduct = () => {
         ))}
       </div>
 
-      <p style={{color: 'green'}}>{message ? `${message}` : ""}</p>
+      <p style={{ color: "green" }}>{message ? `${message}` : ""}</p>
       <button onClick={handleSave}>Save Changes</button>
     </div>
   );

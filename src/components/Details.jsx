@@ -1,104 +1,76 @@
 import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
-import { CartContext } from "../Context";
+
+import { CartContext } from "../contexts/CartContext";
+import { displayNames, prohibitedCombinations } from "../constants";
+
 import { Cart } from "./Cart";
+
+const unavailableOptions = [
+  "Mountain wheels",
+  "Fat bike wheels",
+  "Diamond",
+  "Step-through",
+  "Red"
+];
 
 export const Details = () => {
   const { state } = useLocation();
+  const [message, setMessage] = useState("");
   const [selectedOptions, setSelectedOptions] = useState({});
   const { addToCart } = useContext(CartContext);
-  const bike = state?.bike;
-  const [message, setMessage] = useState("");
-
-  const handleOptionChange = (partName, option) => {
-    if (
-      option === "Mountain wheels" ||
-      option === "Fat bike wheels" ||
-      option === "Diamond" ||
-      option === "Step-through"
-    ) {
-      setMessage(
-        "Some options are currently unavailable. We apologize for the inconvenience."
-      );
-    } else {
-      setMessage("");
-    }
-    setSelectedOptions((prevOptions) => ({
-      ...prevOptions,
-      [partName]: option,
-    }));
-  };
-
-  const handleAddToCart = () => {
-    addToCart({ name: bike.name, selectedOptions });
-  };
-
-  if (!bike) return <div>Loading...</div>;
+  const product = state?.product;
 
   const selectBackgroundColor = (part, option) =>
     selectedOptions[part.partName] === option.option
       ? "lightgreen"
       : "transparent";
 
-  // TODO - VALIDATION WHEN OPTION IS NOT SELECTED
-  // TODO - When cart is added -> didn't change the inventory number * mention
-  // TODO - displayed name check
-  const checkProhibitedCombination = (part, option) => {
-    const { wheels, rimColor, frameType } = selectedOptions;
-
-    if (
-      wheels === "Mountain wheels" &&
-      part.partName === "frameType" &&
-      option.option !== "Full-suspension"
-    ) {
-      return true;
+  const handleOptionChange = (partName, option) => {
+    if (unavailableOptions.includes(option)) {
+      setMessage(
+        "Some options are currently unavailable. We apologize for the inconvenience."
+      );
+    } else {
+      setMessage("");
     }
-
-    if (
-      frameType === "Diamond" &&
-      part.partName === "wheels" &&
-      option.option === "Mountain wheels"
-    ) {
-      return true;
-    }
-
-    if (
-      frameType === "Step-through" &&
-      part.partName === "wheels" &&
-      option.option === "Mountain wheels"
-    ) {
-      return true;
-    }
-
-    if (
-      wheels === "Fat bike wheels" &&
-      part.partName === "rimColor" &&
-      option.option === "Red"
-    ) {
-      return true;
-    }
-
-    if (
-      rimColor === "Red" &&
-      part.partName === "wheels" &&
-      option.option === "Fat bike wheels"
-    ) {
-      return true;
-    }
-
-    return false;
+    setSelectedOptions((prev) => ({ ...prev, [partName]: option }));
   };
+
+  const emptySelectedOptions =
+    Object.keys(selectedOptions).length === 0 ||
+    Object.keys(selectedOptions).length < 5;
+
+  const handleAddToCart = () => {
+    if (emptySelectedOptions) {
+      setMessage("Please select an option for each part");
+    } else {
+      addToCart({ name: product.name, selectedOptions });
+    }
+  };
+
+  const isProhibitedCombination = (partName, option) => {
+    return prohibitedCombinations.some(({ condition, restrict }) => {
+      const isConditionMet = Object.entries(condition).every(
+        ([key, value]) => selectedOptions[key] === value
+      );
+      const isRestricted = restrict[partName]?.includes(option);
+      return isConditionMet && isRestricted;
+    });
+  };
+
+  if (!product) return <div>Loading...</div>;
+
   return (
-    <div>
+    <>
       <Cart />
+      <h1>Customise as you want - {product.name}</h1>
+      <h3>Price : £{product.price}</h3>
+      <h3>{product.description}</h3>
 
-      <h1>Customise as you want - {bike.name}</h1>
-      <h3>Price : £{bike.price}</h3>
-      <h3>{bike.description}</h3>
-
-      {bike.parts?.map((part) => (
+      {product.parts?.map((part) => (
         <div key={part.partName}>
-          <h4>{part.partName}</h4>
+          <h4>{displayNames[part.partName]}</h4>
           <div>
             {part.options?.map((option, index) => (
               <button
@@ -110,13 +82,12 @@ export const Details = () => {
                   backgroundColor: selectBackgroundColor(part, option),
                 }}
                 disabled={
-                  // check updateProducts
-                  Number(option.stock) === 0 ||
-                  checkProhibitedCombination(part, option)
+                  option.stock === 0 ||
+                  isProhibitedCombination(part.partName, option.option)
                 }
               >
                 {option.option} -{" "}
-                {Number(option.stock) !== 0
+                {option.stock !== 0
                   ? `${option.stock} in stock`
                   : "Out of stock temporarily"}
               </button>
@@ -126,6 +97,6 @@ export const Details = () => {
       ))}
       <p style={{ color: "red" }}>{message}</p>
       <button onClick={handleAddToCart}>Add to Cart</button>
-    </div>
+    </>
   );
 };

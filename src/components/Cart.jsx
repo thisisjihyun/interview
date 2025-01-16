@@ -1,29 +1,18 @@
 import React, { useContext } from "react";
-import { useNavigate } from "react-router-dom";
 
-import { CartContext } from "../Context";
+import { useGoToDirection } from "../utils";
+import { CartContext } from "../contexts/CartContext";
 
 export const Cart = () => {
-  // TODO - mention that it can be duplicated as they might want to add the same thing for different qunatity
-  /* TODO - EDIT / DELETE */
-  /* PRESERVE THE ITEM AFTER REFRESH */
   const { cart, removeFromCart } = useContext(CartContext);
-  const navigate = useNavigate();
-
-  const handleClick = () => {
-    navigate("/cart");
-  };
-
-  // TODO - Utils
-  const handleGoBack = () => {
-    navigate(-1);
-  };
+  const handleGoBack = useGoToDirection(-1);
+  const handleGoToCart = useGoToDirection("/cart");
 
   return (
     <>
       <h3>Your Cart</h3>
       <button onClick={handleGoBack}>Go back</button>
-      <button onClick={handleClick}>Go to My Cart</button>
+      <button onClick={handleGoToCart}>Go to My Cart</button>
       <button onClick={removeFromCart}>Clear Cart</button>
       <ul>
         {cart?.length > 0 ? (
