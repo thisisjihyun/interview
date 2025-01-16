@@ -1,7 +1,5 @@
 Thanks for taking your time to check out and review the codebase.
 
-Here are more details
-
 ## TechStack
 FE: React\
 BE: Express\
