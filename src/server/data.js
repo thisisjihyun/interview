@@ -73,15 +73,15 @@ module.exports = [
         options: [
           { option: "Road wheels", stock: 8 },
           { option: "Mountain wheels", stock: 2 },
-          { option: "Fat bike wheels", stock: 0 },
+          { option: "Fat bike wheels", stock: 2 },
         ],
       },
       {
         partName: "rimColor",
         options: [
-          { option: "Red", stock: 0 },
+          { option: "Red", stock: 1 },
           { option: "Blue", stock: 4 },
-          { option: "Black", stock: 2 },
+          { option: "Black", stock: 0 },
         ],
       },
       {

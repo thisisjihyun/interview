@@ -66,8 +66,8 @@ export const ManageProducts = () => {
       });
 
       if (response.status === 200) {
-        const updatedProducts = products.filter((product) => product.id !== id);
-        setProducts(updatedProducts);
+        const data = await response.json();
+        setProducts(data);
       } else {
         console.error("Failed to delete the product");
       }
@@ -152,6 +152,7 @@ export const ManageProducts = () => {
       <div>
         <h2>Bicycle List</h2>
 
+        {console.log("here", products)}
         {products?.map((product, index) => (
           <div key={index}>
             <h3>{product.name}</h3>

@@ -46,6 +46,7 @@ Local storage for Cart Items
 
 BE
 - While I'm more familiar with GraphQL, I used REST APIs here since they were quicker to implement.
+- I initially modified the mock data directly for adding, updating, and deleting. While refactoring, I tried copying the mock data to avoid direct modification. However, this caused issues where the changes didn't persist after refreshing the page. As a result, I decided to continue modifying the mock data directly.
 
 Monolithic Architecture
 - I chose a monolithic architecture at this stage, which is fine for the current scale of the project. Microservices could be considered if the app grows significantly.
