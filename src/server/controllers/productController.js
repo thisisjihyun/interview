@@ -18,8 +18,8 @@ const addProduct = (req, res) => {
     price,
     parts,
   };
-  products.push(newProduct);
-  res.status(201).json(products);
+  const updatedProducts = [...products, newProduct];
+  res.status(201).json(updatedProducts);
 };
 
 const updateProduct = (req, res) => {
@@ -31,14 +31,14 @@ const updateProduct = (req, res) => {
   if (productIndex === -1) {
     return res.status(404).json({ message: "Product not found" });
   }
-  products[productIndex] = {
-    ...products[productIndex],
-    name,
-    description,
-    price,
-    parts,
-  };
-  res.status(200).json(products);
+
+  const updatedProducts = products.map((product) =>
+    product.id === parseInt(id)
+      ? { ...product, name, description, price, parts }
+      : product
+  );
+
+  res.status(200).json(updatedProducts);
 };
 
 const deleteProduct = (req, res) => {
@@ -46,12 +46,16 @@ const deleteProduct = (req, res) => {
   const productIndex = products.findIndex(
     (product) => product.id === parseInt(id)
   );
+
   if (productIndex === -1) {
     return res.status(404).json({ message: "Product not found" });
   }
-  products.splice(productIndex, 1);
-  res.status(200).json(products);
 
+  const updatedProducts = products.filter(
+    (product) => product.id !== parseInt(id)
+  );
+
+  res.status(200).json(updatedProducts);
 };
 
 module.exports = {

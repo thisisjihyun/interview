@@ -1,14 +1,12 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-
 import { useGoToDirection } from "../utils";
 import { ProductsContext } from "../contexts/ProductContext";
-
 import { Cart } from "./Cart";
 
 export const Home = () => {
   const navigate = useNavigate();
-  const { products} = useContext(ProductsContext);
+  const { products } = useContext(ProductsContext);
   const handleGoToProducts = useGoToDirection("/products");
 
   const handleSeeMore = (product) => {
@@ -23,29 +21,23 @@ export const Home = () => {
       <h3>Bicycles for Sale</h3>
       <ul>
         {products?.map((product) => (
-          <>
-            <li key={product.id}>
-              <h3>
-                {product.name} - £{product.price} / {product.description}
-              </h3>
-              {product.parts?.map((part) => {
-                return (
-                  <>
-                    <h4>{part.partName}</h4>
-                    {part.options.map((option, index) => {
-                      return (
-                        <span>
-                          {option.option}
-                          {part.options.length - 1 === index ? "" : ", "}
-                        </span>
-                      );
-                    })}
-                  </>
-                );
-              })}
-            </li>
+          <li key={product.id}>
+            <h3>
+              {product.name} - £{product.price} / {product.description}
+            </h3>
+            {product.parts?.map((part) => (
+              <div key={part.partName}>
+                <h4>{part.partName}</h4>
+                {part.options.map((option, index) => (
+                  <span key={index}>
+                    {option.option}
+                    {part.options.length - 1 === index ? "" : ", "}
+                  </span>
+                ))}
+              </div>
+            ))}
             <button onClick={() => handleSeeMore(product)}>See More</button>
-          </>
+          </li>
         ))}
       </ul>
     </div>

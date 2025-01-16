@@ -84,11 +84,11 @@ describe("Product API", () => {
       .send(updatedProduct)
       .set("Accept", "application/json");
     expect(response.status).toBe(200);
-    expect(response.body).toContainEqual(expect.objectContaining(newProduct));
+    expect(response.body).toContainEqual(expect.objectContaining(updatedProduct));
   });
 
   it("should delete a product", async () => {
-    const response = await request(app).delete("/products/3");
+    const response = await request(app).delete("/products/2");
     expect(response.status).toBe(200);
   });
 
