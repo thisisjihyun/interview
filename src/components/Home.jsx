@@ -19,11 +19,15 @@ export const Home = () => {
     navigate(`/details`, { state: { bike } });
   };
 
+  const navigateAdmin = () => {
+    navigate(`/products`, {});
+  };
+
   return (
     <div>
       <h1>Marcus's Bicycle Shop</h1>
       <Cart />
-
+      <button onClick={navigateAdmin}>Go to Admin page</button>
       <h3>Bicycles for Sale</h3>
       <ul>
         {bicycles?.map((bike) => (

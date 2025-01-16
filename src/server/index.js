@@ -7,7 +7,7 @@ app.use(cors());
 app.use(express.json());
 
 app.get("/api/bicycles", (req, res) => {
-  res.json(data);
+  res.status(200).json(data);
 });
 
 app.post("/api/bicycles", (req, res) => {
@@ -20,20 +20,7 @@ app.post("/api/bicycles", (req, res) => {
     parts,
   };
   data.push(newBicycle);
-  res.json(data);
-  // TODO - Add status code?
-});
-
-app.delete("/api/bicycles/:id", (req, res) => {
-  const id = parseInt(req.params.id);
-  const index = data.findIndex((bike) => bike.id === id);
-
-  if (index === -1) {
-    res.status(404).send({ message: "Bicycle not found" });
-  } else {
-    data.splice(index, 1);
-    res.json(data);
-  }
+  res.status(201).json(data);
 });
 
 app.put("/api/bicycles/:id", (req, res) => {
@@ -44,7 +31,19 @@ app.put("/api/bicycles/:id", (req, res) => {
     res.status(404).send({ message: "Bicycle not found" });
   } else {
     data[index] = req.body;
-    res.json(data[index]);
+    res.status(200).json(data[index]);
+  }
+});
+
+app.delete("/api/bicycles/:id", (req, res) => {
+  const id = parseInt(req.params.id);
+  const index = data.findIndex((bike) => bike.id === id);
+
+  if (index === -1) {
+    res.status(404).send({ message: "Bicycle not found" });
+  } else {
+    data.splice(index, 1);
+    res.status(200).json(data);
   }
 });
 

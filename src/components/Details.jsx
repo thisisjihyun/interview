@@ -115,7 +115,10 @@ export const Details = () => {
                   checkProhibitedCombination(part, option)
                 }
               >
-                {option.option} - {option.stock} in stock
+                {option.option} -{" "}
+                {Number(option.stock) !== 0
+                  ? `${option.stock} in stock`
+                  : "Out of stock temporarily"}
               </button>
             ))}
           </div>

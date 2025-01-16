@@ -48,13 +48,12 @@ export const ManageProducts = () => {
       !newBicycle.name ||
       !newBicycle.description ||
       !newBicycle.price ||
-      !newBicycle.frameType ||
-      !newBicycle.frameFinish ||
-      !newBicycle.wheels ||
-      !newBicycle.rimColor ||
-      !newBicycle.chain
-    )
+      newBicycle.parts.some(
+        (part) => part.options.length === 0 || part.options[0]?.option === ""
+      )
+    ) {
       return alert("Please fill in all fields");
+    }
 
     const response = await fetch("http://localhost:4000/api/bicycles", {
       method: "POST",
@@ -93,7 +92,7 @@ export const ManageProducts = () => {
 
   return (
     <div>
-      <h1>Bicycle Management</h1>
+      <h1>Bicycle Stock Management</h1>
       <div>
         <h2>Add New Bicycle</h2>
         <input
@@ -155,8 +154,8 @@ export const ManageProducts = () => {
 
       <div>
         <h2>Bicycle List</h2>
-        {bicycles?.map((bike) => (
-          <div key={bike.id}>
+        {bicycles?.map((bike, index) => (
+          <div key={index}>
             <h3>{bike.name}</h3>
             <p>{bike.description}</p>
             <p>Price: ${bike.price}</p>
