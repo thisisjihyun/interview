@@ -1,4 +1,4 @@
-export const data = [
+module.exports = [
   {
     id: 1,
     name: "Bike 1",

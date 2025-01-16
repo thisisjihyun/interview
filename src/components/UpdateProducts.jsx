@@ -7,6 +7,7 @@ const UpdateProduct = () => {
   const { bike } = location.state || {};
 
   const [updatedData, setUpdatedData] = useState(bike || {});
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     if (bike) {
@@ -50,14 +51,21 @@ const UpdateProduct = () => {
         }
       );
       const data = await response.json();
-      navigate("/products");
+      if (data) {
+        setMessage(
+          "Bicycle updated successfully. It will be redirected to the products page in 3 seconds."
+        );
+        setTimeout(() => {
+          navigate("/products");
+        }, 3000);
+      }
     } catch (error) {
       console.error("Error updating bicycle:", error);
     }
   };
 
   if (!updatedData.name) {
-    return <div>Loading...</div>; 
+    return <div>Loading...</div>;
   }
 
   return (
@@ -126,6 +134,7 @@ const UpdateProduct = () => {
         ))}
       </div>
 
+      <p style={{color: 'green'}}>{message ? `${message}` : ""}</p>
       <button onClick={handleSave}>Save Changes</button>
     </div>
   );

@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const { data } = require("./data");
+const data = require("./data");
 
 const app = express();
 app.use(cors());
@@ -43,10 +43,15 @@ app.delete("/api/bicycles/:id", (req, res) => {
     res.status(404).send({ message: "Bicycle not found" });
   } else {
     data.splice(index, 1);
-    res.status(200).json(data);
+    res.status(200).json({
+      message: "Bicycle deleted successfully",
+      data,
+    });
   }
 });
 
+module.exports = app;
+
 app.listen(4000, () => {
-  console.log("Server running on http://localhost:4000");
+  console.log(`Server running on http://localhost:4000`);
 });

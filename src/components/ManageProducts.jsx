@@ -74,7 +74,7 @@ export const ManageProducts = () => {
         method: "DELETE",
       });
       const data = await response.json();
-      setBicycles(data);
+      setBicycles(data.data);
     } catch (error) {
       console.error("Error deleting bicycle:", error);
     }
