@@ -1,6 +1,5 @@
 const products = require("../data");
 
-// todo - is it better to update directly?
 const getProducts = (req, res) => {
   const { type } = req.query;
   const filteredProducts = type
