@@ -7,9 +7,8 @@ FE: React\
 BE: Express\
 Test: Jest
 
-## Available Scripts
-In the project directory, you can run:
-
+## Scripts 
+Please run it locally to interact with it
 ### `npm run start`
 Starts the FE server. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
