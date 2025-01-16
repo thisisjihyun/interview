@@ -25,7 +25,7 @@ Public
 - `/details` - Customize each product and add the customized version to your cart
 - `/cart` - Review the items in your cart and clear the cart if needed
 
-Private
+Private\
 Click `Go to Admin Page`
 - `/products` - Add or delete products
 - `/updateProducts` - Edit product details
