@@ -11,7 +11,6 @@ const unavailableOptions = [
   "Fat bike wheels",
   "Diamond",
   "Step-through",
-  "Red"
 ];
 
 export const Details = () => {

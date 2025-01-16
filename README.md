@@ -41,6 +41,9 @@ FE
 State Management
 - Initially, I used `useState` and `props` for state management. However, as the app grew, I found props drilling for shared states (Cart and Products) across components. To address this, I transitioned to using `Context`. While Redux could be considered, I don't think it's necessary for this one. If the app expands to handle different product types (e.g. bicycles, scooters, roller skates), `Redux` would be a better choice.
 
+Local storage for Cart Items
+- To persist the cart state after closing the browser, I used local storage. `sessionStorage` wasn't sufficient, as I needed a more permanent solution with key-value pairs. As the application scales, this approach can still be used to minimize server calls and improve performance.
+
 BE
 - While I'm more familiar with GraphQL, I used REST APIs here since they were quicker to implement.
 
