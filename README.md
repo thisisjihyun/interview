@@ -19,6 +19,17 @@ Starts the BE server. Open [http://localhost:4000](http://localhost:4000) to vie
 ### `npm run test`
 Launches the test runner in the interactive watch mode.
 
+## Overview
+Public
+- `/` - View your cart and browse the product list
+- `/details` - Customize each product and add the customized version to your cart
+- `/cart` - Review the items in your cart and clear the cart if needed
+
+Private
+Click `Go to Admin Page`
+- `/products` - Add or delete products
+- `/updateProducts` - Edit product details
+
 ## Notes
 - As mentioned in the interview instructions, I focused on functionality and kept styling to a bare minimum using inline styles. Please focus on functionality and ignore the appearance 😊
 - Unit tests are included to cover basic functionality, aiming to validate the minimum scenarios.
