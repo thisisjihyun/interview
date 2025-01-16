@@ -29,6 +29,15 @@ Click `Go to Admin Page`
 - `/products` - Add or delete products
 - `/updateProducts` - Edit product details
 
+## Demo
+https://github.com/user-attachments/assets/beb6cf09-5f70-4cae-a270-1654a0c6bd5a
+
+https://github.com/user-attachments/assets/7dad3ae4-4e2d-435a-8d6e-e0807620636d
+
+https://github.com/user-attachments/assets/9b0f4f05-d240-4e5b-9698-4ebc8f9270e8
+
+https://github.com/user-attachments/assets/cccde115-2c13-472f-9a4a-6784a1152050
+
 ## Notes
 - As mentioned in the interview instructions, I focused on functionality and kept styling to a bare minimum using inline styles. Please focus on functionality and ignore the appearance 😊
 - Unit tests are included to cover basic functionality, aiming to validate the minimum scenarios.
