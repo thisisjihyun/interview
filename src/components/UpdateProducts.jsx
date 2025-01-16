@@ -1,6 +1,5 @@
 import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
-
 import { useGoToDirection } from "../utils";
 import { ProductsContext } from "../contexts/ProductContext";
 
@@ -13,21 +12,18 @@ const UpdateProduct = () => {
   const [message, setMessage] = useState("");
   const [updatedProducts, setUpdatedProducts] = useState(product);
 
-  const handleInputChange = (partName, option, field, value) => {
+  const handleInputChange = (partName, optionName, field, value) => {
     setUpdatedProducts((prev) => {
-      const updatedParts = prev.parts.map((part) => {
-        if (part.partName === partName) {
-          const updatedOptions = part.options.map((opt) => {
-            if (opt.option === option) {
-              return { ...opt, [field]: value };
+      const updatedParts = prev.parts.map((part) =>
+        part.partName === partName
+          ? {
+              ...part,
+              options: part.options.map((opt) =>
+                opt.option === optionName ? { ...opt, [field]: value } : opt
+              ),
             }
-            return opt;
-          });
-          return { ...part, options: updatedOptions };
-        }
-        return part;
-      });
-
+          : part
+      );
       return { ...prev, parts: updatedParts };
     });
   };
@@ -52,15 +48,15 @@ const UpdateProduct = () => {
 
       if (data) {
         setMessage(
-          "Updated successfully. It will be redirected to the products page in 3 seconds."
+          "Updated successfully. It will be redirected to the products page in a second."
         );
-        setProducts(data)
+        setProducts(data);
         setTimeout(() => {
           handleGoToProducts();
-        }, 3000);
+        }, 1000);
       }
     } catch (error) {
-      console.error("Error updating a product:", error);
+      console.error("Error updating product:", error);
     }
   };
 
@@ -94,8 +90,8 @@ const UpdateProduct = () => {
         {updatedProducts?.parts?.map((part) => (
           <div key={part.partName}>
             <h3>{part.partName}</h3>
-            {part.options.map((option) => (
-              <div key={option.option}>
+            {part.options.map((option, index) => (
+              <div key={index}>
                 <div>
                   <label>Option Name:</label>
                   <input
@@ -134,7 +130,7 @@ const UpdateProduct = () => {
         ))}
       </div>
 
-      <p style={{ color: "green" }}>{message ? `${message}` : ""}</p>
+      {message && <p style={{ color: "green" }}>{message}</p>}
       <button onClick={handleSave}>Save Changes</button>
     </div>
   );
