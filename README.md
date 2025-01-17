@@ -1,15 +1,12 @@
 Thanks for taking your time to check out and review the codebase.
 
-Here are more details
-
 ## TechStack
 FE: React\
 BE: Express\
 Test: Jest
 
-## Available Scripts
-In the project directory, you can run:
-
+## Scripts 
+Please run it locally to interact with it
 ### `npm run start`
 Starts the FE server. Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
@@ -29,6 +26,15 @@ Private\
 Click `Go to Admin Page`
 - `/products` - Add or delete products
 - `/updateProducts` - Edit product details
+
+## Demo
+https://github.com/user-attachments/assets/beb6cf09-5f70-4cae-a270-1654a0c6bd5a
+
+https://github.com/user-attachments/assets/7dad3ae4-4e2d-435a-8d6e-e0807620636d
+
+https://github.com/user-attachments/assets/9b0f4f05-d240-4e5b-9698-4ebc8f9270e8
+
+https://github.com/user-attachments/assets/cccde115-2c13-472f-9a4a-6784a1152050
 
 ## Notes
 - As mentioned in the interview instructions, I focused on functionality and kept styling to a bare minimum using inline styles. Please focus on functionality and ignore the appearance 😊
