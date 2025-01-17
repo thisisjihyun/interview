@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 import { useGoToDirection } from "../utils";
 import { ProductsContext } from "../contexts/ProductContext";
+import ProductForm from "./ProductForm";
 
 const UpdateProduct = () => {
   const location = useLocation();
@@ -10,47 +11,27 @@ const UpdateProduct = () => {
   const { setProducts } = useContext(ProductsContext);
 
   const [message, setMessage] = useState("");
-  const [updatedProducts, setUpdatedProducts] = useState(product);
-
-  const handleInputChange = (partName, optionName, field, value) => {
-    setUpdatedProducts((prev) => {
-      const updatedParts = prev.parts.map((part) =>
-        part.partName === partName
-          ? {
-              ...part,
-              options: part.options.map((opt) =>
-                opt.option === optionName ? { ...opt, [field]: value } : opt
-              ),
-            }
-          : part
-      );
-      return { ...prev, parts: updatedParts };
-    });
-  };
-
-  const handleNameChange = (e, field) => {
-    setUpdatedProducts({ ...updatedProducts, [field]: e.target.value });
-  };
+  const [updatedProduct, setUpdatedProduct] = useState(product);
 
   const handleSave = async () => {
-    if (!updatedProducts.id) return;
+    if (!updatedProduct.id) return;
 
     try {
       const response = await fetch(
-        `http://localhost:4000/products/${updatedProducts.id}`,
+        `http://localhost:4000/products/${updatedProduct.id}`,
         {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(updatedProducts),
+          body: JSON.stringify(updatedProduct),
         }
       );
       const data = await response.json();
 
       if (data) {
         setMessage(
-          "Updated successfully. It will be redirected to the products page in a second."
+          "Updated successfully. You will be redirected to the products page in a second."
         );
-        setProducts(data);
+        setProducts(data)
         setTimeout(() => {
           handleGoToProducts();
         }, 1000);
@@ -60,78 +41,20 @@ const UpdateProduct = () => {
     }
   };
 
-  if (!updatedProducts) {
-    return <div>Not matched product ...</div>;
+  if (!updatedProduct) {
+    return <div>Product not found...</div>;
   }
 
   return (
     <div>
-      <h1>Update Bicycle Options</h1>
-      <div>
-        <label>Name:</label>
-        <input
-          type="text"
-          value={updatedProducts.name}
-          onChange={(e) => handleNameChange(e, "name")}
-        />
-        <label>Description:</label>
-        <input
-          type="text"
-          value={updatedProducts.description}
-          onChange={(e) => handleNameChange(e, "description")}
-        />
-        <label>Price:</label>
-        <input
-          type="number"
-          value={updatedProducts.price}
-          onChange={(e) => handleNameChange(e, "price")}
-        />
-
-        {updatedProducts?.parts?.map((part) => (
-          <div key={part.partName}>
-            <h3>{part.partName}</h3>
-            {part.options.map((option, index) => (
-              <div key={index}>
-                <div>
-                  <label>Option Name:</label>
-                  <input
-                    type="text"
-                    value={option.option}
-                    onChange={(e) =>
-                      handleInputChange(
-                        part.partName,
-                        option.option,
-                        "option",
-                        e.target.value
-                      )
-                    }
-                    placeholder="Option Name"
-                  />
-                </div>
-                <div>
-                  <label>Stock:</label>
-                  <input
-                    type="number"
-                    value={option.stock}
-                    onChange={(e) =>
-                      handleInputChange(
-                        part.partName,
-                        option.option,
-                        "stock",
-                        Number(e.target.value)
-                      )
-                    }
-                    placeholder="Stock"
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
-        ))}
-      </div>
-
+      <h1>Update Product</h1>
+      <ProductForm
+        product={updatedProduct}
+        setProduct={setUpdatedProduct}
+        handleSubmit={handleSave}
+        buttonText="Save Changes"
+      />
       {message && <p style={{ color: "green" }}>{message}</p>}
-      <button onClick={handleSave}>Save Changes</button>
     </div>
   );
 };

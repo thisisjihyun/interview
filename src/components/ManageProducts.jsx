@@ -3,11 +3,12 @@ import { useNavigate } from "react-router-dom";
 
 import { ProductsContext } from "../contexts/ProductContext";
 import { displayNames } from "../constants";
+import ProductForm from "./ProductForm";
 
 export const ManageProducts = () => {
   const navigate = useNavigate();
   const { products, setProducts } = useContext(ProductsContext);
-  const [newProducts, setNewProducts] = useState({
+  const [newProduct, setNewProduct] = useState({
     name: "",
     description: "",
     price: "",
@@ -37,23 +38,27 @@ export const ManageProducts = () => {
 
   const handleCreate = async () => {
     if (
-      !newProducts.name ||
-      !newProducts.description ||
-      !newProducts.price ||
-      newProducts.parts.some(
+      !newProduct.name ||
+      !newProduct.description ||
+      !newProduct.price ||
+      newProduct.parts.some(
         (part) => part.options.length === 0 || part.options[0]?.option === ""
       )
     ) {
       return alert("Please fill in all fields");
     }
 
-    const response = await fetch("http://localhost:4000/products", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newProducts),
-    });
-    const data = await response.json();
-    setProducts(data);
+    try {
+      const response = await fetch("http://localhost:4000/products", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newProduct),
+      });
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error creating product:", error);
+    }
   };
 
   const handleEdit = (product) =>
@@ -76,77 +81,17 @@ export const ManageProducts = () => {
     }
   };
 
-  const handlePartChange = (partName, option) => {
-    setNewProducts((prev) => ({
-      ...prev,
-      parts: prev.parts.map((part) =>
-        part.partName === partName
-          ? { ...part, options: [{ option, stock: 1 }] }
-          : part
-      ),
-    }));
-  };
-
   return (
     <div>
       <h1>Bicycle Stock Management</h1>
       <div>
         <h2>Add New Bicycle</h2>
-        <input
-          type="text"
-          placeholder="Name"
-          value={newProducts.name}
-          onChange={(e) =>
-            setNewProducts({ ...newProducts, name: e.target.value })
-          }
+        <ProductForm
+          product={newProduct}
+          setProduct={setNewProduct}
+          handleSubmit={handleCreate}
+          buttonText="Add Bicycle"
         />
-        <input
-          type="text"
-          placeholder="Description"
-          value={newProducts.description}
-          onChange={(e) =>
-            setNewProducts({ ...newProducts, description: e.target.value })
-          }
-        />
-        <input
-          type="number"
-          placeholder="Price"
-          value={newProducts.price}
-          onChange={(e) =>
-            setNewProducts({ ...newProducts, price: e.target.value })
-          }
-        />
-        <input
-          type="text"
-          placeholder="Frame Type"
-          value={newProducts.frameType}
-          onBlur={(e) => handlePartChange("frameType", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Frame Finish"
-          value={newProducts.frameFinish}
-          onBlur={(e) => handlePartChange("frameFinish", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Wheels"
-          value={newProducts.wheels}
-          onBlur={(e) => handlePartChange("wheels", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Rim Color"
-          value={newProducts.rimColor}
-          onBlur={(e) => handlePartChange("rimColor", e.target.value)}
-        />
-        <input
-          type="text"
-          placeholder="Chain"
-          value={newProducts.chain}
-          onBlur={(e) => handlePartChange("chain", e.target.value)}
-        />
-        <button onClick={() => handleCreate()}>Add Bicycle</button>
       </div>
 
       <div>
