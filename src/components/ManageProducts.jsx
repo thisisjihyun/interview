@@ -151,8 +151,6 @@ export const ManageProducts = () => {
 
       <div>
         <h2>Bicycle List</h2>
-
-        {console.log("here", products)}
         {products?.map((product, index) => (
           <div key={index}>
             <h3>{product.name}</h3>
