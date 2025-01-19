@@ -28,14 +28,38 @@ Click `Go to Admin Page`
 - `/update/:id` - Edit product details
 
 ## Demo
-https://github.com/user-attachments/assets/beb6cf09-5f70-4cae-a270-1654a0c6bd5a
+1. Public page
+   - Show the list of products
+   - Add a product to the Cart
+      - Validate the prohibited combinations
+       - Customasiable
+       - Display if each item is out of stock
+   - Claer the Cart
+     
+https://github.com/user-attachments/assets/85bd8e12-c436-42a0-b157-8aadca066c96
 
-https://github.com/user-attachments/assets/7dad3ae4-4e2d-435a-8d6e-e0807620636d
+2. Prive page
+  - Add a new product by adding each option/stock
+  - Show the updated product list below the form
+    
+https://github.com/user-attachments/assets/7f616ea1-8c43-4ed2-9858-9745101aabac
 
-https://github.com/user-attachments/assets/9b0f4f05-d240-4e5b-9698-4ebc8f9270e8
 
-https://github.com/user-attachments/assets/cccde115-2c13-472f-9a4a-6784a1152050
+  - Edit an existing product
+    - Customasiable 
+  - Reflect the updated product on the Public page
 
+
+https://github.com/user-attachments/assets/31b8721d-4f83-477f-832f-875a76502277
+
+
+  - Delete existing products
+
+
+https://github.com/user-attachments/assets/71b21dd3-f476-4a1f-9167-1f1d0a17133d
+
+
+    
 ## Notes
 - As mentioned in the interview instructions, I focused on functionality and kept styling to a bare minimum using inline styles. Please focus on functionality and ignore the appearance 😊
 - Unit tests are included to cover basic functionality, aiming to validate the minimum scenarios.
@@ -63,10 +87,14 @@ DB
 Page Rendering
 - Considering scalability and SEO for a commercial website, I would consider implementing Server-Side Rendering or a hybrid solution, especially if the website needs to handle dynamic, customized parts.
 
+Scalablility in the future
+- I used the `type` field in the mock data to categorize products, which will serve as an indicator for future scalability of the application. This approach allows us to easily extend the product catalog by adding new types (e.g. roller skates). By assigning a specific type to each product, the application can dynamically filter and serve relevant products through different endpoints based on the provided type.
+- In terms of the file structure, I aimed to standardize it by using a generic product structure instead of specifying individual type names. This approach ensures reusability and flexibility, allowing the product structure to easily accommodate new types in the future.
 
 ## Improvements I could make 
-- Implement E2E tests with Cypress.js from a user's perspective, as well as integration tests to validate interactions between different parts.
-- Modularize components to make them more reusable (e.g. Input).
-- Improve error handling to make it more user-friendly.
-- Focus on styling, responsive design, and accessibility improvements.
-- Enhance validation (e.g. Input) and make it more user-friendly.
+- Implement E2E tests with Cypress.js from a user's perspective, as well as integration tests to validate interactions between different parts
+- Modularize components to make them more reusable (e.g. Input)
+- Improve error handling to make it more user-friendly
+- Focus on styling, responsive design, and accessibility improvements
+- Enhance validation (e.g. Input) and make it more user-friendly
+- Enable direct access via URL. Currently, typing a URL like '/details/1' doesn't display anything as it can only be accessed from the main page
