@@ -1,17 +1,13 @@
 import React, { useState, useContext } from "react";
 import { useLocation } from "react-router-dom";
 
-import { CartContext } from "../contexts/CartContext";
-import { displayNames, prohibitedCombinations } from "../constants";
-
 import { Cart } from "./Cart";
-
-const unavailableOptions = [
-  "Mountain wheels",
-  "Fat bike wheels",
-  "Diamond",
-  "Step-through",
-];
+import { CartContext } from "../contexts/CartContext";
+import {
+  displayNames,
+  prohibitedCombinations,
+  unavailableOptions,
+} from "../constants";
 
 export const Details = () => {
   const { state } = useLocation();
@@ -25,6 +21,7 @@ export const Details = () => {
       ? "lightgreen"
       : "transparent";
 
+  // Check prohibited combinations and display a warning message
   const handleOptionChange = (partName, option) => {
     if (unavailableOptions.includes(option)) {
       setMessage(
@@ -36,25 +33,31 @@ export const Details = () => {
     setSelectedOptions((prev) => ({ ...prev, [partName]: option }));
   };
 
-  const emptySelectedOptions =
+  const validateSelectedOptions =
     Object.keys(selectedOptions).length === 0 ||
     Object.keys(selectedOptions).length < 5;
 
+  // Validate all the options are checked before adding to cart
   const handleAddToCart = () => {
-    if (emptySelectedOptions) {
+    if (validateSelectedOptions) {
       setMessage("Please select an option for each part");
     } else {
       addToCart({ name: product.name, selectedOptions });
     }
   };
 
-  const isProhibitedCombination = (partName, option) => {
-    return prohibitedCombinations.some(({ condition, restrict }) => {
-      const isConditionMet = Object.entries(condition).every(
+  const isProhibitedCombination = (partName, option, selectedOptions) => {
+    // Check if selected options value is matched when
+    return prohibitedCombinations.some(({ when, disallow }) => {
+      const conditionMet = Object.entries(when).every(
         ([key, value]) => selectedOptions[key] === value
       );
-      const isRestricted = restrict[partName]?.includes(option);
-      return isConditionMet && isRestricted;
+
+      // Check if the current partName is matched to 'disallow' options
+      const isRestricted = disallow[partName]?.includes(option);
+
+      // Return true if both the condition is met
+      return conditionMet && isRestricted;
     });
   };
 
@@ -82,7 +85,11 @@ export const Details = () => {
                 }}
                 disabled={
                   option.stock === 0 ||
-                  isProhibitedCombination(part.partName, option.option)
+                  isProhibitedCombination(
+                    part.partName,
+                    option.option,
+                    selectedOptions
+                  )
                 }
               >
                 {option.option} -{" "}

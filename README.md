@@ -19,13 +19,13 @@ Launches the test runner in the interactive watch mode.
 ## Overview
 Public
 - `/` - View your cart and browse the product list
-- `/details` - Customize each product and add the customized version to your cart
+- `/details/:id` - Customize each product and add the customized version to your cart
 - `/cart` - Review the items in your cart and clear the cart if needed
 
 Private\
 Click `Go to Admin Page`
-- `/products` - Add or delete products
-- `/updateProducts` - Edit product details
+- `/manage` - Add or delete products
+- `/update/:id` - Edit product details
 
 ## Demo
 https://github.com/user-attachments/assets/beb6cf09-5f70-4cae-a270-1654a0c6bd5a

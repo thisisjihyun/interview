@@ -7,10 +7,10 @@ import { Cart } from "./Cart";
 export const Home = () => {
   const navigate = useNavigate();
   const { products } = useContext(ProductsContext);
-  const handleGoToProducts = useGoToDirection("/products");
+  const handleGoToProducts = useGoToDirection("/manage");
 
   const handleSeeMore = (product) => {
-    navigate(`/details`, { state: { product } });
+    navigate(`/details/${product.id}`, { state: { product } });
   };
 
   return (
@@ -25,13 +25,13 @@ export const Home = () => {
             <h3>
               {product.name} - £{product.price} / {product.description}
             </h3>
-            {product.parts?.map((part) => (
-              <div key={part.partName}>
-                <h4>{part.partName}</h4>
-                {part.options.map((option, index) => (
+            {product.parts?.map(({ partName, options }) => (
+              <div key={partName}>
+                <h4>{partName}</h4>
+                {options.map(({ option }, index) => (
                   <span key={index}>
-                    {option.option}
-                    {part.options.length - 1 === index ? "" : ", "}
+                    {option}
+                    {options.length - 1 === index ? "" : ", "}
                   </span>
                 ))}
               </div>

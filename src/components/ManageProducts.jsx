@@ -2,41 +2,19 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ProductsContext } from "../contexts/ProductContext";
+import { createProduct, deleteProduct} from '../api/productsApi'
 import { displayNames } from "../constants";
+import { newDefaultProduct } from "../constants";
+
 import ProductForm from "./ProductForm";
 
 export const ManageProducts = () => {
   const navigate = useNavigate();
   const { products, setProducts } = useContext(ProductsContext);
-  const [newProduct, setNewProduct] = useState({
-    name: "",
-    description: "",
-    price: "",
-    parts: [
-      {
-        partName: "frameType",
-        options: [],
-      },
-      {
-        partName: "frameFinish",
-        options: [],
-      },
-      {
-        partName: "wheels",
-        options: [],
-      },
-      {
-        partName: "rimColor",
-        options: [],
-      },
-      {
-        partName: "chain",
-        options: [],
-      },
-    ],
-  });
+  const [newProduct, setNewProduct] = useState(newDefaultProduct);
 
   const handleCreate = async () => {
+    // Validate if all the options are provided
     if (
       !newProduct.name ||
       !newProduct.description ||
@@ -49,12 +27,7 @@ export const ManageProducts = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:4000/products", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newProduct),
-      });
-      const data = await response.json();
+      const data = await createProduct(newProduct);
       setProducts(data);
     } catch (error) {
       console.error("Error creating product:", error);
@@ -62,25 +35,17 @@ export const ManageProducts = () => {
   };
 
   const handleEdit = (product) =>
-    navigate(`/updateProduct`, { state: { product } });
+    navigate(`/update/${product.id}`, { state: { product } });
 
   const handleDelete = async (id) => {
     try {
-      const response = await fetch(`http://localhost:4000/products/${id}`, {
-        method: "DELETE",
-      });
-
-      if (response.status === 200) {
-        const data = await response.json();
-        setProducts(data);
-      } else {
-        console.error("Failed to delete the product");
-      }
+      const data = await deleteProduct(id);
+      setProducts(data);
     } catch (error) {
       console.error("Error deleting a product:", error);
     }
   };
-
+  
   return (
     <div>
       <h1>Bicycle Stock Management</h1>
