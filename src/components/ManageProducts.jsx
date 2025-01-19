@@ -2,7 +2,7 @@ import React, { useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { ProductsContext } from "../contexts/ProductContext";
-import { createProduct, deleteProduct} from '../api/productsApi'
+import { createProduct, deleteProduct } from "../api/productsApi";
 import { displayNames } from "../constants";
 import { newDefaultProduct } from "../constants";
 
@@ -29,6 +29,7 @@ export const ManageProducts = () => {
     try {
       const data = await createProduct(newProduct);
       setProducts(data);
+      setNewProduct(newDefaultProduct);
     } catch (error) {
       console.error("Error creating product:", error);
     }
@@ -45,7 +46,7 @@ export const ManageProducts = () => {
       console.error("Error deleting a product:", error);
     }
   };
-  
+
   return (
     <div>
       <h1>Bicycle Stock Management</h1>
